@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สวนต้นไม้สำเภาทอง</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1b5e20;
+            --background: #f6fbf4;
+            --text: #333333;
+            --light-gray: #f0f0f0;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: var(--white);
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 30px;
+            font-weight: 700;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+        
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 0;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: var(--primary);
+            font-size: 22px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: "🌱";
+            display: inline-block;
+        }
+        
+        /* Carousel for Popular Items */
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+        
+        /* Category Filters */
+        .category-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: var(--light-gray);
+            border: none;
+            padding: 10px 18px;
+            margin: 5px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #search {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border-radius: 50px;
+            border: 2px solid var(--light-gray);
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        #search:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 18px;
+        }
+        
+        /* Product Grid */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+            padding: 10px 0;
+        }
+        
+        /* Product Cards */
+        .product-item, .popular-item {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .popular-item {
+            min-width: 160px;
+            max-width: 200px;
+            flex: 0 0 auto;
+        }
+        
+        .product-item:hover, .popular-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-img-container {
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-item:hover .product-img, .popular-item:hover .product-img {
+            transform: scale(1.05);
+        }
+        
+        .product-details {
+            padding: 15px 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .product-name {
+            color: var(--primary-dark);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            color: #555;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .product-category {
+            font-size: 12px;
+            background: #e8f5e9;
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .view-detail-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .view-detail-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff5722;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        /* Cart Button */
+        .cart-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            font-size: 20px;
+            z-index: 100;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .cart-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff5722;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* Bottom Navigation */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--white);
+            box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.25);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-title {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .modal-info {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        
+        .modal-info p {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: #f1f1f1;
+            color: #ff5252;
+        }
+        
+        .add-cart-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-cart-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        /* Cart items */
+        .cart-list {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .cart-empty {
+            text-align: center;
+            padding: 30px 0;
+            color: #888;
+        }
+        
+        .cart-item {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .cart-item-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .cart-item-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--primary-dark);
+        }
+        
+        .cart-item-price {
+            font-size: 14px;
+            color: #555;
+            margin: 3px 0;
+        }
+        
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #ebebeb;
+            color: #555;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .qty-btn:hover {
+            background: #ddd;
+        }
+        
+        .item-qty {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .remove-btn {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .remove-btn:hover {
+            background: #ff0000;
+        }
+        
+        .cart-summary {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+        
+        /* Order form */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 16px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+        }
+        
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-action:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background: #f1f1f1;
+            color: #555;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(76, 175, 80, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Empty states */
+        .empty-state {
+            text-align: center;
+            padding: 30px 0;
+            color: #888;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Success message */
+        .success-message {
+            background: #e8f5e9;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .product-list {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .popular-item {
+                min-width: 200px;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        สวนต้นไม้สำเภาทอง
+        <div class="header-subtitle">แหล่งรวมต้นไม้คุณภาพดีที่คัดสรรมาเพื่อคุณ</div>
+    </header>
+    
+    <div class="cart-btn" id="cart-btn">
+        🛒 <span class="cart-count" id="cart-count">0</span>
+    </div>
+    
+    
+    <div class="container">
+        <!-- โปรโมชั่น -->
+        <div class="section">
+            <h2 class="section-title">โปรโมชั่นพิเศษ</h2>
+            <div class="scroll-container">
+                <div class="popular-item">
+                    <div class="product-img-container">
+                        <img src="/api/placeholder/400/400" class="product-img" alt="ต้นไม้ฟอกอากาศ">
+                        <div class="product-badge">ลด 20%</div>
+                    </div>
+                    <div class="product-details">
+                        <div>
+                            <h3 class="product-name">แพ็คเกจฟอกอากาศ</h3>
+                            <div class="product-category">ชุดรวม</div>
+                            <p class="product-price">฿990 <span style="text-decoration: line-through; font-size: 12px; color: #999;">฿1,200</span></p>
+                        </div>
+                        <!--<button class="view-detail-btn" data-name="แพ็คเกจฟอกอากาศ" data-price="990" data-original-price="1,200" data-category="ชุดรวม" data-description="ชุดต้นไม้ฟอกอากาศ 3 ชนิด ที่ช่วยกรองอากาศในบ้านให้บริสุทธิ์" data-image="/api/placeholder/400/400">ดูรายละเอียด</button>-->
+                    </div>
+                </div>
+                
+                <div class="popular-item">
+                    <div class="product-img-container">
+                        <img src="/api/placeholder/400/400" class="product-img" alt="ต้นไม้มงคล">
+                        <div class="product-badge">ใหม่</div>
+                    </div>
+                    <div class="product-details">
+                        <div>
+                            <h3 class="product-name">ชุดต้นไม้มงคล</h3>
+                            <div class="product-category">มงคล</div>
+                            <p class="product-price">฿750</p>
+                        </div>
+                        <!--<button class="view-detail-btn" data-name="ชุดต้นไม้มงคล" data-price="750" data-category="มงคล" data-description="ต้นไม้มงคลที่ช่วยเสริมความโชคดีและความมั่งคั่ง เหมาะสำหรับบ้านและที่ทำงาน" data-image="/api/placeholder/400/400">ดูรายละเอียด</button>-->
+                    </div>
+                </div>
+                
+                <div class="popular-item">
+                    <div class="product-img-container">
+                        <img src="/api/placeholder/400/400" class="product-img" alt="ต้นไม้ประดับ">
+                    </div>
+                    <div class="product-details">
+                        <div>
+                            <h3 class="product-name">แคคตัสแฟนซี</h3>
+                            <div class="product-category">แคคตัส</div>
+                            <p class="product-price">฿290</p>
+                        </div>
+                        <!--<button class="view-detail-btn" data-name="แคคตัสแฟนซี" data-price="290" data-category="แคคตัส" data-description="แคคตัสสายพันธุ์พิเศษ ดูแลง่าย เหมาะสำหรับตกแต่งโต๊ะทำงาน" data-image="/api/placeholder/400/400">ดูรายละเอียด</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- หมวดหมู่ -->
+        <div class="section">
+            <h2 class="section-title">หมวดหมู่ต้นไม้</h2>
+            <div class="category-container">
+                <button class="filter-btn active" data-category="all">🌱 ทั้งหมด</button>
+                <button class="filter-btn" data-category="ฟอกอากาศ">🍃 ฟอกอากาศ</button>
+                <button class="filter-btn" data-category="ต้นไม้ดอก">🌸 ต้นไม้ดอก</button>
+                <button class="filter-btn" data-category="ต้นไม้ใหญ่">🌴 ต้นไม้ใหญ่</button>
+                <button class="filter-btn" data-category="แคคตัส">🏜️ แคคตัส</button>
+                <button class="filter-btn" data-category="มงคล">✨ มงคล</button>
+            </div>
+        </div>
+        
+        <!-- ค้นหา -->
+        <div class="section">
+            <h2 class="section-title">สินค้าทั้งหมด</h2>
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search" placeholder="ค้นหาสินค้า...">
+            </div>
+            
+            <!-- รายการสินค้า -->
+            <div class="product-list">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลสินค้า
+        const products = [
+            {
+                id: 1,
+                name: "สันติภาพลิลลี่",
+                category: "ต้นไม้ดอก",
+                price: 220,
+                description: "ดอกไม้ที่สวยงามและมีกลิ่นหอม ช่วยสร้างบรรยากาศในห้องให้สดชื่น",
+                image: "images/1.png",
+                badge: null
+            },
+            {
+                id: 2,
+                name: "เฟิร์นบอสตัน",
+                category: "ฟอกอากาศ",
+                price: 180,
+                description: "เฟิร์นที่ช่วยดูดซับสารพิษในอากาศ เหมาะสำหรับห้องนอนและห้องทำงาน",
+                image: "images/2.png",
+                badge: null
+            },
+            {
+                id: 3,
+                name: "ยางอินเดีย",
+                category: "ฟอกอากาศ",
+                price: 340,
+                description: "ต้นไม้ที่ช่วยดูดซับสารพิษและมลพิษในอากาศได้ดี เลี้ยงง่าย โตเร็ว",
+                image: "images/3.png",
+                badge: null
+            },
+            {
+                id: 4,
+                name: "แคคตัสแฟนซี",
+                category: "แคคตัส",
+                price: 290,
+                description: "แคคตัสสายพันธุ์พิเศษ ดูแลง่าย เหมาะสำหรับตกแต่งโต๊ะทำงาน",
+                image: "/api/placeholder/400/400",
+                badge: "ใหม่"
+            },
+            {
+                id: 5,
+                name: "แพ็คเกจฟอกอากาศ",
+                category: "ชุดรวม",
+                price: 990,
+                originalPrice: 1200,
+                description: "ชุดต้นไม้ฟอกอากาศ 3 ชนิด ที่ช่วยกรองอากาศในบ้านให้บริสุทธิ์",
+                image: "/api/placeholder/400/400",
+                badge: "ลด 20%"
+            },
+            {
+                id: 6,
+                name: "ชุดต้นไม้มงคล",
+                category: "มงคล",
+                price: 750,
+                description: "ต้นไม้มงคลที่ช่วยเสริมความโชคดีและความมั่งคั่ง เหมาะสำหรับบ้านและที่ทำงาน",
+                image: "/api/placeholder/400/400",
+                badge: "ใหม่"
+            },
+            {
+                id: 7,
+                name: "ไทรประดับ",
+                category: "ต้นไม้ใหญ่",
+                price: 450,
+                description: "ต้นไทรขนาดกลาง เหมาะสำหรับประดับตกแต่งบ้านและสวน ดูแลง่าย",
+                image: "/api/placeholder/400/400",
+                badge: null
+            },
+            {
+                id: 8,
+                name: "กล้วยไม้รองเท้านารี",
+                category: "ต้นไม้ดอก",
+                price: 350,
+                description: "กล้วยไม้ที่มีดอกสวยงาม ออกดอกต่อเนื่อง เหมาะสำหรับตกแต่งภายในบ้าน",
+                image: "/api/placeholder/400/400",
+                badge: null
+            },
+            {
+                id: 9,
+                name: "ต้นเงินต้นทอง",
+                category: "มงคล",
+                price: 280,
+                description: "ต้นไม้มงคลนำโชคลาภและความมั่งคั่ง เหมาะสำหรับวางในห้องรับแขกหรือที่ทำงาน",
+                image: "/api/placeholder/400/400",
+                badge: null
+            }
+        ];
+        
+        // สร้างตะกร้าสินค้า
+        let cart = [];
+        
+        // รีเซ็ตและแสดงสินค้าทั้งหมดตอนเริ่มต้น
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts(products);
+            updateCartCount();
+            setupEventListeners();
+        });
+        
+        // ตั้งค่าการฟังเหตุการณ์ต่างๆ
+        function setupEventListeners() {
+            // การกรองหมวดหมู่
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    filterProducts(category);
+                    
+                    // ลบคลาส active จากปุ่มทั้งหมดและเพิ่มให้ปุ่มที่กด
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // การค้นหา
+            const searchInput = document.getElementById('search');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                searchProducts(searchTerm);
+            });
+            
+            // การเปิดโมดัลรายละเอียดสินค้า
+            document.querySelectorAll('.view-detail-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    const product = products.find(p => p.id === productId);
+                    
+                    if (product) {
+                        openProductModal(product);
+                    }
+                });
+            });
+            
+            // การเปิดโมดัลตะกร้า
+            document.getElementById('cart-btn').addEventListener('click', function() {
+                openCartModal();
+            });
+        }
+        
+        // แสดงสินค้าในหน้าเว็บ
+        function displayProducts(productsToDisplay) {
+            const productList = document.querySelector('.product-list');
+            productList.innerHTML = '';
+            
+            if (productsToDisplay.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>ไม่พบสินค้าที่คุณกำลังค้นหา</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsToDisplay.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-item';
+                productCard.setAttribute('data-id', product.id);
+                
+                // แสดงราคาพร้อมส่วนลด (ถ้ามี)
+                let priceHTML = `<p class="product-price">฿${product.price}`;
+                if (product.originalPrice) {
+                    priceHTML += ` <span style="text-decoration: line-through; font-size: 12px; color: #999;">฿${product.originalPrice}</span>`;
+                }
+                priceHTML += `</p>`;
+                
+                // แสดงป้ายโปรโมชั่น (ถ้ามี)
+                let badgeHTML = '';
+                if (product.badge) {
+                    badgeHTML = `<div class="product-badge">${product.badge}</div>`;
+                }
+                
+                productCard.innerHTML = `
+                    <div class="product-img-container">
+                        <img src="${product.image}" class="product-img" alt="${product.name}">
+                        ${badgeHTML}
+                    </div>
+                    <div class="product-details">
+                        <div>
+                            <h3 class="product-name">${product.name}</h3>
+                            <div class="product-category">${product.category}</div>
+                            ${priceHTML}
+                        </div>
+                        <button class="view-detail-btn" data-id="${product.id}">ดูรายละเอียด</button>
+                    </div>
+                `;
+                
+                productList.appendChild(productCard);
+            });
+            
+            // เพิ่ม event listener ให้กับปุ่มดูรายละเอียดที่สร้างใหม่
+            document.querySelectorAll('.view-detail-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    const product = products.find(p => p.id === productId);
+                    
+                    if (product) {
+                        openProductModal(product);
+                    }
+                });
+            });
+        }
+        
+        // กรองสินค้าตามหมวดหมู่
+        function filterProducts(category) {
+            if (category === 'all') {
+                displayProducts(products);
+            } else {
+                const filtered = products.filter(product => product.category === category);
+                displayProducts(filtered);
+            }
+        }
+        
+        // ค้นหาสินค้า
+        function searchProducts(searchTerm) {
+            if (searchTerm === '') {
+                displayProducts(products);
+            } else {
+                const filtered = products.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) || 
+                    product.description.toLowerCase().includes(searchTerm) ||
+                    product.category.toLowerCase().includes(searchTerm)
+                );
+                displayProducts(filtered);
+            }
+        }
+        
+        // เปิดโมดัลรายละเอียดสินค้า
+        function openProductModal(product) {
+            // สร้างโมดัลถ้ายังไม่มี
+            if (!document.getElementById('product-modal')) {
+                const modalHTML = `
+                    <div id="product-modal" class="modal">
+                        <div class="modal-content">
+                            <button class="close-btn" id="close-product-modal">&times;</button>
+                            <h2 class="modal-title" id="modal-product-name"></h2>
+                            <img id="modal-product-img" class="modal-img" src="" alt="">
+                            <div class="modal-info">
+                                <p><strong>หมวดหมู่:</strong> <span id="modal-product-category"></span></p>
+                                <p><strong>ราคา:</strong> <span id="modal-product-price"></span></p>
+                                <p><strong>รายละเอียด:</strong> <span id="modal-product-desc"></span></p>
+                            </div>
+                            <button class="add-cart-btn" id="add-to-cart-btn">
+                                <span>🛒</span> เพิ่มลงตะกร้า
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // เพิ่ม event listener สำหรับการปิดโมดัล
+                document.getElementById('close-product-modal').addEventListener('click', function() {
+                    document.getElementById('product-modal').style.display = 'none';
+                });
+            }
+            
+            // เติมข้อมูลสินค้าในโมดัล
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-img').src = product.image;
+            document.getElementById('modal-product-img').alt = product.name;
+            document.getElementById('modal-product-category').textContent = product.category;
+            
+            // แสดงราคาพร้อมส่วนลด (ถ้ามี)
+            let priceHTML = `฿${product.price}`;
+            if (product.originalPrice) {
+                priceHTML += ` <span style="text-decoration: line-through; font-size: 14px; color: #999;">฿${product.originalPrice}</span>`;
+            }
+            document.getElementById('modal-product-price').innerHTML = priceHTML;
+            
+            document.getElementById('modal-product-desc').textContent = product.description;
+            
+            // เพิ่ม event listener สำหรับปุ่มเพิ่มลงตะกร้า
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            addToCartBtn.setAttribute('data-id', product.id);
+            addToCartBtn.onclick = function() {
+                const productId = parseInt(this.getAttribute('data-id'));
+                addToCart(productId);
+                document.getElementById('product-modal').style.display = 'none';
+            };
+            
+            // แสดงโมดัล
+            document.getElementById('product-modal').style.display = 'flex';
+        }
+        
+        // เพิ่มสินค้าลงตะกร้า
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) return;
+            
+            // ตรวจสอบว่าสินค้ามีในตะกร้าแล้วหรือไม่
+            const existingItemIndex = cart.findIndex(item => item.id === productId);
+            
+            if (existingItemIndex !== -1) {
+                // ถ้ามีแล้ว เพิ่มจำนวน
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // ถ้ายังไม่มี เพิ่มสินค้าใหม่
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            
+            // อัพเดทจำนวนสินค้าในตะกร้า
+            updateCartCount();
+            
+            // แสดงข้อความแจ้งเตือนว่าเพิ่มสินค้าลงตะกร้าแล้ว
+            showNotification(`เพิ่ม ${product.name} ลงในตะกร้าแล้ว`);
+        }
+        
+        // อัพเดทจำนวนสินค้าในตะกร้า
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+        
+        // แสดงข้อความแจ้งเตือน
+        function showNotification(message) {
+            // สร้างแจ้งเตือนถ้ายังไม่มี
+            if (!document.getElementById('notification')) {
+                const notificationHTML = `
+                    <div id="notification" class="notification">
+                        <p id="notification-message"></p>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', notificationHTML);
+                
+                // เพิ่ม CSS สำหรับแจ้งเตือน
+                const style = document.createElement('style');
+                style.textContent = `
+                    .notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--primary);
+                        color: white;
+                        padding: 15px 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                        z-index: 1000;
+                        transform: translateX(150%);
+                        transition: transform 0.3s ease-in-out;
+                    }
+                    
+                    .notification.show {
+                        transform: translateX(0);
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // แสดงข้อความและแจ้งเตือน
+            const notification = document.getElementById('notification');
+            document.getElementById('notification-message').textContent = message;
+            
+            notification.classList.add('show');
+            
+            // ซ่อนแจ้งเตือนหลังจาก 3 วินาที
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // เปิดโมดัลตะกร้า
+        function openCartModal() {
+            // สร้างโมดัลถ้ายังไม่มี
+            if (!document.getElementById('cart-modal')) {
+                const modalHTML = `
+                    <div id="cart-modal" class="modal">
+                        <div class="modal-content">
+                            <button class="close-btn" id="close-cart-modal">&times;</button>
+                            <h2 class="modal-title">ตะกร้าสินค้า</h2>
+                            <div id="cart-items" class="cart-list">
+                                <!-- สินค้าในตะกร้าจะถูกเพิ่มที่นี่ด้วย JavaScript -->
+                            </div>
+                            <div id="cart-summary" class="cart-summary">
+                                <span>ยอดรวม:</span>
+                                <span id="cart-total">฿0</span>
+                            </div>
+                            <button class="btn-action" id="checkout-btn">ดำเนินการสั่งซื้อ</button>
+                            <button class="btn-action btn-secondary" id="continue-shopping-btn">เลือกซื้อสินค้าต่อ</button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // เพิ่ม event listener สำหรับการปิดโมดัล
+                document.getElementById('close-cart-modal').addEventListener('click', function() {
+                    document.getElementById('cart-modal').style.display = 'none';
+                });
+                
+                // เพิ่ม event listener สำหรับปุ่มเลือกซื้อสินค้าต่อ
+                document.getElementById('continue-shopping-btn').addEventListener('click', function() {
+                    document.getElementById('cart-modal').style.display = 'none';
+                });
+                
+                // เพิ่ม event listener สำหรับปุ่มดำเนินการสั่งซื้อ
+                document.getElementById('checkout-btn').addEventListener('click', function() {
+                    if (cart.length === 0) {
+                        showNotification('กรุณาเลือกสินค้าก่อนดำเนินการสั่งซื้อ');
+                        return;
+                    }
+                    openCheckoutModal();
+                    document.getElementById('cart-modal').style.display = 'none';
+                });
+            }
+            
+            // แสดงสินค้าในตะกร้า
+            displayCartItems();
+            
+            // แสดงโมดัล
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+        
+        // แสดงสินค้าในตะกร้า
+        function displayCartItems() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="cart-empty">
+                        <p>ตะกร้าของคุณว่างเปล่า</p>
+                    </div>
+                `;
+                cartTotal.textContent = '฿0';
+                return;
+            }
+            
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" class="cart-item-img" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">฿${item.price} x ${item.quantity} = ฿${itemTotal}</div>
+                        <div class="cart-controls">
+                            <button class="qty-btn minus" data-id="${item.id}">-</button>
+                            <span class="item-qty">${item.quantity}</span>
+                            <button class="qty-btn plus" data-id="${item.id}">+</button>
+                            <button class="remove-btn" data-id="${item.id}">ลบ</button>
+                        </div>
+                    </div>
+                `;
+                
+                cartItemsContainer.appendChild(cartItem);
+            });
+            
+            // แสดงยอดรวม
+            cartTotal.textContent = `฿${total}`;
+            
+            // เพิ่ม event listener สำหรับปุ่มเพิ่ม/ลด/ลบสินค้า
+            document.querySelectorAll('.qty-btn.minus').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    updateCartItemQuantity(productId, -1);
+                });
+            });
+            
+            document.querySelectorAll('.qty-btn.plus').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    updateCartItemQuantity(productId, 1);
+                });
+            });
+            
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    removeCartItem(productId);
+                });
+            });
+        }
+        
+        // อัพเดทจำนวนสินค้าในตะกร้า
+        function updateCartItemQuantity(productId, change) {
+            const itemIndex = cart.findIndex(item => item.id === productId);
+            
+            if (itemIndex === -1) return;
+            
+            cart[itemIndex].quantity += change;
+            
+            if (cart[itemIndex].quantity <= 0) {
+                // ลบสินค้าออกจากตะกร้าถ้าจำนวนน้อยกว่าหรือเท่ากับ 0
+                cart.splice(itemIndex, 1);
+            }
+            
+            // อัพเดทการแสดงผล
+            displayCartItems();
+            updateCartCount();
+        }
+        
+        // ลบสินค้าออกจากตะกร้า
+        function removeCartItem(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            
+            // อัพเดทการแสดงผล
+            displayCartItems();
+            updateCartCount();
+        }
+        
+        // เปิดโมดัลชำระเงิน
+        function openCheckoutModal() {
+            // สร้างโมดัลถ้ายังไม่มี
+            if (!document.getElementById('checkout-modal')) {
+                const modalHTML = `
+                    <div id="checkout-modal" class="modal">
+                        <div class="modal-content">
+                            <button class="close-btn" id="close-checkout-modal">&times;</button>
+                            <h2 class="modal-title">ข้อมูลการสั่งซื้อ</h2>
+                            <form id="checkout-form">
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="name">ชื่อ-นามสกุล</label>
+                                    <input type="text" id="name" class="form-input" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label class="form-label" for="phone">เบอร์โทรศัพท์</label>
+                                    <input type="tel" id="phone" class="form-input" required>
+                                </div>
+                    
+                                <!-- วิธีการจัดส่ง -->
+                                <div class="form-group">
+                                    <label class="form-label" for="delivery">วิธีการจัดส่ง</label>
+                                    <select id="delivery" class="form-select" onchange="toggleDeliveryOptions()" required>
+                                        <option value="">-- เลือกวิธีการจัดส่ง --</option>
+                                        <option value="pickup">รับหน้าร้าน</option>
+                                        <option value="delivery">จัดส่งภายในพิษณุโลก</option>
+                                    </select>
+                                </div>
+                    
+                                <!-- ตัวเลือก "รับหน้าร้าน" -->
+                                <div id="pickup-options" class="form-group" style="display: none;">
+                                    <label class="form-label">วิธีการรับสินค้า</label>
+                                    <div class="radio-group">
+                                        <div class="radio-option">
+                                            <input type="radio" id="pickup-now" name="pickup-type" value="now" checked onchange="togglePickupSchedule()">
+                                            <label for="pickup-now">รับสินค้าทันที</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="pickup-schedule" name="pickup-type" value="schedule" onchange="togglePickupSchedule()">
+                                            <label for="pickup-schedule">เลือกวันและเวลารับสินค้า</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- ตัวเลือกวันและเวลารับสินค้า -->
+                                    <div id="schedule-options" style="display: none; margin-top: 10px;">
+                                        <div class="form-subgroup">
+                                            <label class="form-label" for="pickup-date">วันที่รับสินค้า</label>
+                                            <input type="date" id="pickup-date" class="form-input">
+                                        </div>
+                                        <div class="form-subgroup" style="margin-top: 8px;">
+                                            <label class="form-label" for="pickup-time">เวลารับสินค้า</label>
+                                            <select id="pickup-time" class="form-select">
+                                                <option value="10:00">10:00 น.</option>
+                                                <option value="11:00">11:00 น.</option>
+                                                <option value="12:00">12:00 น.</option>
+                                                <option value="13:00">13:00 น.</option>
+                                                <option value="14:00">14:00 น.</option>
+                                                <option value="15:00">15:00 น.</option>
+                                                <option value="16:00">16:00 น.</option>
+                                                <option value="17:00">17:00 น.</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p style="margin-top: 10px;">กรุณาแสดงบัตรประชาชนเมื่อมารับสินค้าที่ร้าน</p>
+                                </div>
+                                
+                                <!-- ที่อยู่จัดส่ง -->
+                                <div id="address-field" class="form-group" style="display: none;">
+                                    <label class="form-label" for="address">ที่อยู่จัดส่ง</label>
+                                    <textarea id="address" class="form-input" rows="3"></textarea>
+                                </div>
+                    
+                                <button type="submit" class="btn-action">ยืนยันการสั่งซื้อ</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // เพิ่ม event listener สำหรับการปิดโมดัล
+                document.getElementById('close-checkout-modal').addEventListener('click', function() {
+                    document.getElementById('checkout-modal').style.display = 'none';
+                });
+                
+                // เพิ่ม event listener สำหรับการส่งฟอร์ม
+                document.getElementById('checkout-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    completeOrder();
+                });
+        
+                // ตั้งค่าวันที่เริ่มต้นของตัวเลือกวันที่
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                document.getElementById('pickup-date').setAttribute('min', tomorrowStr);
+                document.getElementById('pickup-date').value = tomorrowStr;
+            }
+            
+            // แสดงโมดัล
+            document.getElementById('checkout-modal').style.display = 'flex';
+        }
+        
+        // เปิด/ปิดตัวเลือกการรับสินค้าและที่อยู่จัดส่ง
+        function toggleDeliveryOptions() {
+            let deliveryMethod = document.getElementById('delivery').value;
+            let pickupOptions = document.getElementById('pickup-options');
+            let addressField = document.getElementById('address-field');
+        
+            if (deliveryMethod === 'pickup') {
+                pickupOptions.style.display = 'block';
+                addressField.style.display = 'none';
+                // ไม่จำเป็นต้องกรอกที่อยู่กรณีรับหน้าร้าน
+                document.getElementById('address').removeAttribute('required');
+                // เรียกฟังก์ชันเพื่อปรับสถานะของตัวเลือกวันเวลารับสินค้า
+                togglePickupSchedule();
+            } else if (deliveryMethod === 'delivery') {
+                pickupOptions.style.display = 'none';
+                addressField.style.display = 'block';
+                // กำหนดให้ต้องกรอกที่อยู่กรณีจัดส่ง
+                document.getElementById('address').setAttribute('required', 'required');
+            } else {
+                pickupOptions.style.display = 'none';
+                addressField.style.display = 'none';
+                // ไม่บังคับต้องกรอกที่อยู่ถ้ายังไม่ได้เลือกวิธีการจัดส่ง
+                document.getElementById('address').removeAttribute('required');
+            }
+        }
+        
+        // เปิด/ปิดตัวเลือกวันและเวลารับสินค้า
+        function togglePickupSchedule() {
+            const scheduleOptions = document.getElementById('schedule-options');
+            const pickupScheduleRadio = document.getElementById('pickup-schedule');
+            const pickupDateInput = document.getElementById('pickup-date');
+            const pickupTimeInput = document.getElementById('pickup-time');
+            
+            if (pickupScheduleRadio.checked) {
+                scheduleOptions.style.display = 'block';
+                pickupDateInput.setAttribute('required', 'required');
+                pickupTimeInput.setAttribute('required', 'required');
+            } else {
+                scheduleOptions.style.display = 'none';
+                pickupDateInput.removeAttribute('required');
+                pickupTimeInput.removeAttribute('required');
+            }
+        }
+        
+        // ดำเนินการสั่งซื้อเสร็จสิ้น
+        function completeOrder() {
+            // รวบรวมข้อมูลการสั่งซื้อ
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const deliveryMethod = document.getElementById('delivery').value;
+            
+            // ข้อมูลตะกร้าสินค้า (ตัวอย่าง - ในโค้ดจริงอาจมาจากตัวแปรที่เก็บข้อมูลสินค้าในตะกร้า)
+            const cartItems = cart.map(item => {
+                return {
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                };
+            });
+            
+            // คำนวณยอดรวม
+            const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            
+            // สร้างข้อมูลสำหรับส่งไปยัง Line Bot
+            let orderData = {
+                name: name,
+                phone: phone,
+                delivery_method: deliveryMethod === 'pickup' ? 'รับหน้าร้าน' : 'จัดส่ง',
+                items: cartItems,
+                total_amount: totalAmount
+            };
+            
+            // เพิ่มข้อมูลตามวิธีการรับหรือจัดส่ง
+            if (deliveryMethod === 'pickup') {
+                const pickupType = document.querySelector('input[name="pickup-type"]:checked').value;
+                
+                if (pickupType === 'schedule') {
+                    const pickupDate = document.getElementById('pickup-date').value;
+                    const pickupTime = document.getElementById('pickup-time').value;
+                    orderData.pickup_schedule = {
+                        type: 'scheduled',
+                        date: pickupDate,
+                        time: pickupTime
+                    };
+                } else {
+                    orderData.pickup_schedule = {
+                        type: 'immediate'
+                    };
+                }
+            } else if (deliveryMethod === 'delivery') {
+                const address = document.getElementById('address').value;
+                orderData.address = address;
+            }
+            
+            // ส่งข้อมูลไปยัง Line Bot (ในโค้ดจริงจะใช้ fetch หรือ axios ส่งไปยัง API ของคุณ)
+            sendToLineBot(orderData);
+            
+            // ปิดโมดัลชำระเงิน
+            document.getElementById('checkout-modal').style.display = 'none';
+            
+            // แสดงโมดัลขอบคุณ
+            showThankYouModal();
+        }
+        
+        // ฟังก์ชันส่งข้อมูลไป Line Bot ด้วย Token
+        function sendToLineBot(orderData) {
+            // ตั้งค่า Line Messaging API URL
+            const lineMessagingApiUrl = 'https://api.line.me/v2/bot/message/push';
+            
+            // Line Channel Access Token (ให้นำ Token ของคุณมาใส่ตรงนี้)
+            const lineChannelToken = 'HUo5kHvc4ofbnPiCEx/nClOAEuDdgC8NrNZFagNqVQJOZ6M2gewuOSZyX6pwg/4itXNJKqXltMZ1z/m+3OjkwKMFgXTGbTm6YumnZKzGStw9kM9TbPCVF6Mr8u+aGHtJ6ggv0xb5PFUcmD6AULeGBwdB04t89/1O/w1cDnyilFU=';
+            
+            // Line User ID หรือ Group ID ที่ต้องการส่งข้อความไป
+            // (ใส่ User ID หรือ Group ID ที่ต้องการส่งข้อความไป)
+            const lineReceiverId = 'U4257a180de51f213b8d8ffa5d339ce30';
+            
+            // แปลงข้อมูล orderData เป็นข้อความที่จะส่งให้กับ Line Bot
+            let messageText = `มีออเดอร์ใหม่!\n\n`;
+            messageText += `ชื่อลูกค้า: ${orderData.name}\n`;
+            messageText += `เบอร์โทร: ${orderData.phone}\n`;
+            messageText += `วิธีการรับ/จัดส่ง: ${orderData.delivery_method}\n`;
+            
+            // เพิ่มข้อมูลการรับสินค้าหรือที่อยู่จัดส่ง
+            if (orderData.delivery_method === 'รับหน้าร้าน') {
+                if (orderData.pickup_schedule.type === 'scheduled') {
+                    messageText += `วันที่รับสินค้า: ${orderData.pickup_schedule.date}\n`;
+                    messageText += `เวลารับสินค้า: ${orderData.pickup_schedule.time}\n`;
+                } else {
+                    messageText += `การรับสินค้า: รับทันที\n`;
+                }
+            } else {
+                messageText += `ที่อยู่จัดส่ง: ${orderData.address}\n`;
+            }
+            
+            // เพิ่มข้อมูลรายการสินค้า
+            messageText += `\nรายการสินค้า:\n`;
+            orderData.items.forEach((item, index) => {
+                messageText += `${index + 1}. ${item.name} x ${item.quantity} = ${item.price * item.quantity} บาท\n`;
+            });
+            
+            // เพิ่มยอดรวม
+            messageText += `\nยอดรวมทั้งสิ้น: ${orderData.total_amount} บาท`;
+            
+            // สร้าง JSON payload สำหรับส่งไปยัง Line Messaging API
+            const lineMessagePayload = {
+                to: lineReceiverId,
+                messages: [
+                    {
+                        type: "text",
+                        text: messageText
+                    }
+                ]
+            };
+            
+            // ส่งข้อมูลไปยัง Line Messaging API
+            fetch(lineMessagingApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${lineChannelToken}`
+                },
+                body: JSON.stringify(lineMessagePayload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('การส่งข้อมูลไปยัง Line Bot ไม่สำเร็จ');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('ส่งข้อมูลไปยัง Line Bot สำเร็จ:', data);
+            })
+            .catch(error => {
+                console.error('เกิดข้อผิดพลาดในการส่งข้อมูลไปยัง Line Bot:', error);
+                // อาจจะแสดงข้อความแจ้งเตือนให้ผู้ใช้ทราบว่ามีปัญหาในการส่งข้อมูล
+            });
+        }
+        
+        // แสดงโมดัลขอบคุณ
+        function showThankYouModal() {
+            // สร้างโมดัลแสดงข้อความขอบคุณ
+            if (!document.getElementById('thankyou-modal')) {
+                const modalHTML = `
+                    <div id="thankyou-modal" class="modal">
+                        <div class="modal-content">
+                            <h2 class="modal-title">ขอบคุณสำหรับการสั่งซื้อ</h2>
+                            <p>คำสั่งซื้อของคุณได้รับการยืนยันแล้ว</p>
+                            <p>ขอบคุณสำหรับการสั่งซื้อ! เราจะติดต่อกลับไปเพื่อยืนยันการสั่งซื้อภายใน 24 ชั่วโมง</p>
+                            <button class="btn-action" id="thankyou-btn">กลับไปหน้าหลัก</button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // เพิ่ม event listener สำหรับปุ่มกลับไปหน้าหลัก
+                document.getElementById('thankyou-btn').addEventListener('click', function() {
+                    document.getElementById('thankyou-modal').style.display = 'none';
+                    // ล้างตะกร้า
+                    cart = [];
+                    updateCartCount();
+                });
+            }
+            
+            // แสดงโมดัลขอบคุณ
+            document.getElementById('thankyou-modal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
